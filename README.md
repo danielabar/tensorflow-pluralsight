@@ -14,6 +14,12 @@
     - [The Computation Graph](#the-computation-graph)
     - [Cyclical Dependencies in ML](#cyclical-dependencies-in-ml)
     - [Building and Running Graphs](#building-and-running-graphs)
+      - [Visualizing Graph](#visualizing-graph)
+    - [Modeling Computations as Graphs](#modeling-computations-as-graphs)
+    - [Demo: Simple Math Operations](#demo-simple-math-operations)
+    - [Tensors](#tensors)
+  - [Digging Deeper into Fundamentals](#digging-deeper-into-fundamentals)
+    - [Linear Regression](#linear-regression)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
