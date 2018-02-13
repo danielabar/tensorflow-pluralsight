@@ -227,32 +227,209 @@ Can repeat the process as many times as needed. ML is iterative algorithms which
 
 ### Building and Running Graphs
 
+2 Steps in a TF program:
 
+1. Build graph: Specify operations and data.
+1. Run graph: Execute graph to get final result.
 
+Demo - open Python shell, then:
 
+```python
+>>> import tensorflow as tf
+>>> ### CONSTRUCT GRAPH
+>>> # setup 4 constants as input to computation graph
+>>> a = tf.constant(6, name='constant_a')
+>>> b = tf.constant(3, name='constant_b')
+>>> c = tf.constant(10, name='constant_c')
+>>> d = tf.constant(5, name='constant_d')
+>>>
+>>> # define computational nodes
+>>> mul = tf.multiply(a, b, name='mul')
+>>> div = tf.div(c, d, name='div')
+>>> # this node depends on output of mul and div computations
+>>> addn = tf.add_n([mul, div], name='addn)
+>>>
+>>> # this will NOT print value of computations
+>>> print(addn)
+Tensor("addn:0", shape=(), dtype=int32)
+>>> print(a)
+Tensor("constant_a:0", shape=(), dtype=int32)
+>>>
+>>> # RUN GRAPH
+>>> sess = tf.Session()
+>>> sess.run(addn)
+20
+```
 
+Notes:
+- Constants are *immutable*, once value is assigned, cannot be changed.
+- Constants have a value (eg: 6, 3, 10, 5) but also *name* parameter (eg: constant_a) - used for identification of constant when visualized with TensorBoard.
+- `a, b, c, d` are the *tensors* that will flow through the graph.
+- `a, b, c, d` are edges in the graph.
+- `mul` is a node specifying multiply operation, operates on `a` and `b`.
+- Computational nodes can also be identified by name (eg: mul).
+- `add_n` operation sums up elements in an array.
+- Printing data provides name of tensor, shape and data type, but not the value that it holds because graph hasn't been run yet.
+- Entire graph must be constructed first, before it can be executed, TF analyzes graph for optimization such as parallel paths.
+- To run graph, need TF `Session` object - supervises execution of TF graph.
+- To run any portion of a graph, invoke `run` method on session object, passing in node to be computed, can be invoked on final node or any intermediate node.
 
+#### Visualizing Graph
 
+Add instrumentation to code:
 
+```python
+>>> # write graph events to a log file directory
+>>> writer = tf.summary.FileWriter('./logs/m2_example1', sess.graph)
+>>> # cleanup
+>>> writer.close()
+>>> sess.close()
+```
 
+Notes:
+- First agrument to `FileWriter` is directory where events should be written, second argument is what you want to write out, in this example, the graph representation.
+- `writer` and `sess` are handles to resources and should be closed to avoid memory leaks.
+- `ls logs/m2_example1` to see what FileWriter generated.
+- run from shell `tensorboard --logdir="logs/m2_example1"`, then open `http://localhost:6006` in browser.
 
+### Modeling Computations as Graphs
 
+Real world graphs are not built by hand but rather by TF libraries and can have hundreds of nodes and tensors. TF can find parallel portions and distribute them on a cluster.
 
+![big-graph](images/big-graph.png "big-graph")
+![big-graph-distributed](images/big-graph-distributed.png "big-graph-distributed")
 
+### Demo: Simple Math Operations
 
+[simple-math](code/simple-math.py)
 
+This time use editor to write python program rather than REPL.
 
+Note: Program can be modified and re-run while TensorBoard is running. Refresh browser to see changes to graph. For example:
 
+![tesorboard-example](images/tensorboard-example.png "tensorboard-example")
 
+### Tensors
 
+Definition:
+- The central unit of data in TensorFlow: All data in TF is represented as a tensor.
+- A tensor consists of a set of primitive values (integers, floats, strings, booleans)...
+- ... shaped into an array of any number of dimensions, i.e. tensor is an n-dimensional array.
 
+**Data is Represented as Tensors**
 
+In previous examples, simple constants/scalars were used as tensors.
+Scalars are *0-D* tensors (eg: 3, 6.7, "a").
 
+Vectors (aka lists) are *1-D* tensors, eg: `[1, 3, 5, 7 9]`.
 
+Number of dimensions has can be determined by number of pairs of square brackets used to represent it.
 
+2D matrix is a 2-D tensor, eg: `[[1, 3, 5], [7, 9, 11]]`
 
+N-dimensional matrices are N-D tensors, eg:
 
+```
+[
+  [
+    [1, 2],
+    [3, 4],
+    [5, 6]
+  ],
+  [
+    [7, 8],
+    [9, 10],
+    [11, 12],
+  ]
+]
+```
 
+**Characterization of Tensors**
+
+1. Rank: Number of dimensions in a tensor.
+2. Shape: Number of elements in each dimension.
+3. Data Type: data type of each element in the tensor.
+
+![tensor-rank](images/tensor-rank "tensor-rank")
+![tensor-shape](images/tensor-shape "tensor-shape")
+
+**Demo: Rank of a Tensor**
+
+Use `tf.rank()` to get the rank of tensors.
+
+From Python shell:
+
+```python
+>>> import tensorflow as tf
+>>> sess = tf.Session()
+>>> zeroD = tf.constant(5)
+>>> sess.run(tf.rank(zeroD))
+0
+>>> oneD = tf.constant(['How', 'are', 'you?'])
+>>> sess.run(tf.rank(oneD))
+1
+>>> twoD = tf.constant([[1.0, 2.3], [1.5, 2.9]])
+>>> sess.run(tf.rank(twoD))
+2
+>>> sess.close()
+```
+
+**Demo: Tensor Math**
+
+[tensor-math](code/tensor-math.py)
+
+This time TensorBoard graph shows a node `Rank` that was not explicitly defined in code:
+
+![tensor-math-graph](images/tensor-math-graph.png "tensor-math-graph")
+
+`Rank` is needed to perform some of the other operations specified in the code. TF will add it behind the scenes.
+
+**Use numpy arrays in TensorFlow**
+
+`numpy` popular Python package for scientific computing. Contains powerful array representation - industry standard for Python. TF is compatible with numpy arrays, they're simply tensors.
+
+From Python shell:
+
+```python
+>>> import tensorflow as tf
+>>> import numpy as np
+>>> sess = tf.Session()
+>>> # declare numpy array
+>>> zeroD = np.array(30, dtype=np.int32)
+>>> # numpy array can be used exactly the same as a tensor
+>>> sess.run(tf.rank(zeroD))
+0
+>>> sess.run(tf.shape(zeroD))
+array([], dtype=int32)
+>>> oneD = np.array([5.6, 6.3, 8.9, 9.0], dtype=np.float32)
+>>> sess.run(tf.rank(oneD))
+1
+>>> sess.run(tf.shape(oneD))
+array([4], dtype=int32)
+```
+
+## Digging Deeper into Fundamentals
+
+### Linear Regression
+
+Model a relationship where there is *Cause* (independent or explanatory variable) and *Effect* (dependent variable). i.e. `X Causes Y`.
+If the relationship can be expressed as a straight line, *Linear Regression*. Eg: Wealth Increases Life Expectancy, or Lower Home Prices Away from the City.
+
+Eg: Want algorithm to predict price per square foot of a home, given distance from the city center. Relationship can be represented as straight line - linear regression.
+
+![linear-regression](images/linear-regression.png "linear-regression")
+
+Regression Equation: `y = A + Bx`
+
+Where A is the y intercept and B is the slope of the line.
+
+- y1 = A + Bx1
+- y2 = A + Bx2
+- y3 = A + Bx3
+...
+- yn = A + Bxn
+
+Linear regression involves finding "best fit" line.
 
 
 
