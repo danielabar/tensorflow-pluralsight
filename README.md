@@ -20,6 +20,10 @@
     - [Tensors](#tensors)
   - [Digging Deeper into Fundamentals](#digging-deeper-into-fundamentals)
     - [Linear Regression](#linear-regression)
+    - [Linear Regression Algorithms in Practice](#linear-regression-algorithms-in-practice)
+    - [Placeholders](#placeholders)
+    - [Fetches and the Feed Dictionary](#fetches-and-the-feed-dictionary)
+    - [Variables](#variables)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -425,6 +429,8 @@ Eg: Want algorithm to predict price per square foot of a home, given distance fr
 
 ![linear-regression](images/linear-regression.png "linear-regression")
 
+`x` axis is the cause/explanatory variable, `y` axis is the effect/dependent variable.
+
 Regression Equation: `y = A + Bx`
 
 Where A is the y intercept and B is the slope of the line.
@@ -436,6 +442,111 @@ Where A is the y intercept and B is the slope of the line.
 - yn = A + Bxn
 
 Linear regression involves finding "best fit" line.
+
+Consider two lines, which is the "best fit"?
+
+![regression-compare-two-lines](images/regression-compare-two-lines.png "regression-compare-two-lines")
+
+For Line 1, intercept on `y` axis is `A1`, and `B1` is the slope, i.e. if `x` increases by 1 unit `y` decreases by `B1` units.
+`y` decreases as `x` increases, line has negative slopeself.
+Line 2 has `y` intrecept `A2`.
+
+To find best fit, minimize least square error of points to represent line. Least square error refers to finding line which is as close as possible to all data points.
+
+Drop vertical lines from each data point to each candidate line (dotted lines). Best fit line is that where sum of the squares of the lengths of the dotted lines is minimized.
+
+![regression-sum-squares](images/regression-sum-squares.png "regression-sum-squares")
+
+Dotted lines represent *errors* - between actual points and candidate regression line.
+
+Best fit line improves predictive power of regression algorithm.
+
+### Linear Regression Algorithms in Practice
+
+Equation of line: `y = A + Bx`, where A is Y intercept and B is slope of the line.
+
+ML algorithm will estimate initial values for A and B. Then run regression to calculate errors. This is one iteration.
+Then error calculation fed back into input, to get new values of A and B, kicking off next iteration. And so on until error calculation is minimized. At that point, the final A and B values are determined to get the regression line.
+
+Regression is an example of supervised learning. Because the training dataset contains the correct output values (eg: given a distance from city center, price/sq ft of a particular home).
+
+### Placeholders
+
+Linear regression can be used on a variety of problems (eg: predicting price of google stock given dow jones index, expect upward sloping line).
+
+Model should be able to accept different X and Y values.
+
+*Placeholders* in TF hold the place for a Tensor, whose value will only be available at run time. `feed_dict` argument is used to provide values for running graph.
+
+[Demo](code/placeholder.py)
+
+Run the code and visualize graph with TensorBoard:
+
+```
+python code/placeholder.py
+tensorboard --logdir="logs/m3_example"
+```
+
+This time graph shows x and y as placeholders:
+
+![board-with-placeholders](images/board-with-placeholders.png "board-with-placeholders")
+
+### Fetches and the Feed Dictionary
+
+`Session.run()` accepts two parameters:
+
+1. `fetches` specifies what to compute.
+1. `feed_dict` specifies placeholder values for the computation.
+
+[Demo](code/fetches-feed.py)
+
+### Variables
+
+Allow you to *change* value that is in them. For example, use variables to store values that change as the model converges when calculating linear regression (A and B values).
+
+In general, ML algorithms iterate to get closer to the solution. Therefore, model needs ability to hold constantly changing values.
+
+So far in TF, have used:
+- Constants: Immutable values which do not change.
+- Placeholders: Assigned once and do not change after.
+- Variables: Are constantly recomputed. Mutable Tensor values that persist across multiple calls to `Session.run()`.
+
+Every variable is assigned an initial value, for example:
+
+```python
+W = tf.Variable([2.5, 4.0], tf.float32, name='var_W')
+```
+
+When using variables, need to initialize them first, otherwise will be unable to use them:
+
+```python
+init = tf.global_variables_initliazer()
+```
+
+`init` is a computation node that needs to be executd to initialize all the variables.
+
+[Demo](code/variable.py)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
