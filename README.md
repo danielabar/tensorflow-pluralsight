@@ -28,6 +28,10 @@
     - [Named Scopes](#named-scopes)
     - [Interactive Sessions](#interactive-sessions)
     - [Linear Regression in Tensorflow](#linear-regression-in-tensorflow)
+  - [Working with images](#working-with-images)
+    - [Image Recognition and Neural Networks](#image-recognition-and-neural-networks)
+    - [Representing Images as 3-D Tensors](#representing-images-as-3-d-tensors)
+    - [Transposing Images](#transposing-images)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -584,7 +588,67 @@ sess.close()
 
 [linear-regression.py](code/linear-regression.py)
 
+## Working with images
 
+### Image Recognition and Neural Networks
+
+Color and grayscale images can be represented as Tensors.
+
+Every image is made of pixels. Each pixel holds information about that portion of the image such as color, saturation, hue, intensity, etc.
+
+Image recognition is complicated ML algorithm, does not occur in one step. High level process:
+
+Images represented as pixels -> Identify edges, colors, shapes -> A photo of a horse
+
+Neural networks, specifically convolutional neural networks (CNNs) are suited for difficult image recognition tasks.
+
+TF is optimized for building neural network solutions for image recognition.
+
+### Representing Images as 3-D Tensors
+
+Imagine pixels forming a grid over an image. Grid can be represented as 2-D array.
+
+![pixel-grid](images/pixel-grid "pixel-grid")
+
+Each pixel holds a value based on the type of image. For color image, every pixel is an RGB value (red, green, blue). Each number ranges from 0 - 255. So each pixel requires 3 values to represent the color, i.e. channels.
+
+Number of values required to represent a pixel is number of *channels* it has.
+
+Grayscale images contain shades of gray ranging from white to black. Each pixel contains one value - intensity, ranging from 0.0 to 1.0. Grayscale images have just one channel.
+
+TF can be used to represent single and multi-channel images.
+
+Pixel grid that represents image is a 2-D matrix. Dimensions are length and width of image.
+
+One more dimension required, which is value for each pixel. Number of elements that are in this 3rd dimension depend on type of image. Number of channels specifies the number of elements in 3rd dimension.
+
+Since tensors are n-dimensional arrays, images can be represented as tensors.
+
+### Transposing Images
+
+[Demo](code/transpose-image.py)
+
+```shell
+pip install matplotlib
+```
+
+To make `matplotlib` work on a mac:
+
+```shell
+nano ~/.matplotlib/matplotlibrc
+```
+
+Add following line to specify what back end it should use to render images:
+
+```
+backend: TkAff
+```
+
+matplotlib by default can only deal with png files. To also handle jpg, need another library:
+
+```shell
+pip install Pillow
+```
 
 
 
