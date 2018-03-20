@@ -40,3 +40,11 @@ init = tf.global_variables_initializer()
 # assignment computation is stored in result and can be executed using session run
 # `result` is a computation node just like any other in TF
 result = number.assign(tf.multiply(number, multiplier))
+
+# calculate result several times within a for loop
+with tf.Session() as sess:
+    sess.run(init)
+    for i in range(10):
+        print('Result number * multiplier = ', sess.run(result))
+        # Use `assign_add` statement to increment multiplier by one each time through this loop
+        print('Increment multiplier, new value = ', sess.run(multiplier.assign_add(1)))

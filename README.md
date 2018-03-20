@@ -24,6 +24,10 @@
     - [Placeholders](#placeholders)
     - [Fetches and the Feed Dictionary](#fetches-and-the-feed-dictionary)
     - [Variables](#variables)
+    - [Default and Explicitly Specified Graphs](#default-and-explicitly-specified-graphs)
+    - [Named Scopes](#named-scopes)
+    - [Interactive Sessions](#interactive-sessions)
+    - [Linear Regression in Tensorflow](#linear-regression-in-tensorflow)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -502,6 +506,8 @@ This time graph shows x and y as placeholders:
 
 ### Variables
 
+[Demo](code/variable.py)
+
 Allow you to *change* value that is in them. For example, use variables to store values that change as the model converges when calculating linear regression (A and B values).
 
 In general, ML algorithms iterate to get closer to the solution. Therefore, model needs ability to hold constantly changing values.
@@ -523,15 +529,60 @@ When using variables, need to initialize them first, otherwise will be unable to
 init = tf.global_variables_initliazer()
 ```
 
-`init` is a computation node that needs to be executd to initialize all the variables.
+`init` is a computation node that needs to be executed to initialize all the variables.
 
-[Demo](code/variable.py)
+### Default and Explicitly Specified Graphs
 
+[Demo](code/multiple-graphs.py)
 
+Computation graph setup by TF uses edges to represent tensors and nodes to represent operators.
 
+Can define multiple graphs within a single TF program.
 
+Every TF program has a default graph. All computations performed, variables, placeholders, constants instantiated all belong to the default graph. Graph can also be logically segmented by instantiating a graph explicitly:
 
+```python
+import tensorflow as tf
 
+g1 = tf.Graph()
+```
+
+### Named Scopes
+
+[demo](code/named-scopes.py)
+
+Improve debugging with named scopes - group a bunch of computations together so logically they appear as one equation node in tensor board. Then can zoom in to get the details.
+
+```python
+with tf.name_scope('Equation_1'):
+    Ax2_1 = tf.multiply(A, tf.pow(x, 2), name='Ax2_1')
+    Bx = tf.multiply(B, x, name='Bx')
+    y1 = tf.add_n([Ax2_1, Bx, C], name='y1')
+```
+
+Can use same variable name in different named scopes.
+
+### Interactive Sessions
+
+Allow you to work with a session without having to hold a reference to a session instance.
+
+```python
+import tensorflow as tf
+sess = tf.InteractiveSession()
+
+A = tf.constant([4], tf.int32, name='A')
+x = tf.placeholder(tf.int32, name='x')
+y = A * x
+# look ma, no session needed!
+y.eval(feed_dict={x: [5]})
+sess.close()
+```
+
+`y.eval` with interactive session is equivalent to `tf.get_default_session().run(y).`
+
+### Linear Regression in Tensorflow
+
+[linear-regression.py](code/linear-regression.py)
 
 
 
