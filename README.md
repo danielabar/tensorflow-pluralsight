@@ -32,6 +32,7 @@
     - [Image Recognition and Neural Networks](#image-recognition-and-neural-networks)
     - [Representing Images as 3-D Tensors](#representing-images-as-3-d-tensors)
     - [Transposing Images](#transposing-images)
+    - [Resizing Images](#resizing-images)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -650,7 +651,23 @@ matplotlib by default can only deal with png files. To also handle jpg, need ano
 pip install Pillow
 ```
 
+### Resizing Images
 
+[Demo](code/resize-images.py)
+
+Use TF queue and coordinators to read in a list of images.
+
+Note that session object in TF is multi-threaded.
+
+TF provides coordinator to make working with multiple threads/queues easier:
+
+```python
+coord = tf.train.Coordinator()
+```
+
+Coordinator does activities such as: threads being able to stop together, exceptions catching/reporting, closing queues.
+
+Queues are used to compute tensors *asynchronously* using multiple threads.
 
 
 
