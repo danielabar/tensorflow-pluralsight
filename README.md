@@ -33,6 +33,12 @@
     - [Representing Images as 3-D Tensors](#representing-images-as-3-d-tensors)
     - [Transposing Images](#transposing-images)
     - [Resizing Images](#resizing-images)
+    - [List of Images as 4D Tensors](#list-of-images-as-4d-tensors)
+  - [Solving Basic Math Functions](#solving-basic-math-functions)
+    - [The MNIST Dataset](#the-mnist-dataset)
+    - [Types of ML Algorithms](#types-of-ml-algorithms)
+    - [K-nearest-neighbors Algorithm](#k-nearest-neighbors-algorithm)
+    - [Distance Measures](#distance-measures)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -701,9 +707,62 @@ When running the sample code generated log file via Tensorboard, note only 3 ima
 tf.summary.image('image', images_tensor, max_outputs=4)
 ```
 
+## Solving Basic Math Functions
 
+### The MNIST Dataset
 
+- Modified National Institute of Standards and Technology [download](http://yann.lecun.com/exdb/mnist/)
+- Contains large number of images which are handwritten digits.
+- Commonly used for training image processing systems.
+- Every image has a label that is the digit represented by that image.
+- Each digit is in grayscale (single channel, every pixel holds a single value for intensity, between 0 and 1)
+- Each image size is 28x28 = 784px
+- MNIST for ML === Hello World for programming
 
+![mnist-example](images/mnist-example.png "mnist-example")
+
+![mnist-grid](images/mnist-grid.png "mnist-grid")
+
+Notice portions of image that have strokes have higher intensity values, and white areas have lower intensity values.
+
+### Types of ML Algorithms
+
+2 broad categories:
+
+- Supervised: Training data fed into ML algorithm has labels associated with each element. Labels are used to correct algorithm and improve prediction.
+- Unsupervised: Model is responsible for understanding patterns/structure in the input data. No training data set or labels are available.
+
+**Supervised Learning: Overview**
+
+- Input variable `x` and output variable `y`. `y` is label that is available for every element in dataset.
+- Objective of ML algorithm is to find mapping function `y = f(x)`.
+- Approximate mapping function so for new values of `x`, values of `y` can be predicted.
+- Use existing dataset to *correct* mapping function approximation.
+
+**Unsupervised Learning: Overview**
+
+- Only have input data `x` but no ouptput data.
+- Goal of algorithm is to *model* underlying structure to learn more about data, find patterns.
+- Algorithms *self discover* patterns/structure in data.
+
+### K-nearest-neighbors Algorithm
+
+- Supervised learning algorithm, uses training data to find what is *most similar* to the current sample.
+- Uses entire training dataset as a model.
+- Each element in training data has a label.
+- Training dataset used to make predictions about new data.
+- Finds which element in training data this new data element is most *similar* to. aka *nearest neighbor*
+- But how to calculate what is similar? *Distance measures*: How far away one data point is from another.
+- Distance does not just apply to co-ordinates, can be applied to images because they are just 3-D arrays of pixels representing the values.
+- Common distance measures are: Euclidean distance, Hamming distance, Manhattan distance.
+
+### Distance Measures
+
+**Euclidean Distance**
+
+Standard formula to measure distance between any two points in space. Gives shortest distance between two points "as the crow files". Use when points are in continuous space.
+
+![euclidian](images/euclidian.png "euclidian")
 
 
 
