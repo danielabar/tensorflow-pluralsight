@@ -669,8 +669,37 @@ Coordinator does activities such as: threads being able to stop together, except
 
 Queues are used to compute tensors *asynchronously* using multiple threads.
 
+### List of Images as 4D Tensors
 
+TF usually deals with list of images in a single 4-D tensor. For this to work, all images need to be the same size and each pixel should have the same number of channels.
 
+For example, a 4-D tensor:
+
+```python
+(10, 6, 6, 3)
+```
+
+Where dimensions are:
+
+`3` 4th dimension - Number of channels, eg: color image needs 3 channels for R, G, and B.
+
+`6, 6` 3rd and 2nd dimensions - Height and width of each image in the list.
+
+`10` 1st dimension - number of images in the list. 0-based index, first image is index 0, second image index 1, etc.
+
+[Demo image transformations](code/image-transformations.py) (starts with same code as previous demo).
+
+`tf.stack()` Stacks a list of *rank-R* tensors into one rank-(R+1) tensor.
+
+`tf.stack(image_list` For example, List of `(224, 224, 3)` images becomes a single Tensor `(index, 224, 224, 3)`
+
+Having all images in a single tensor makes it easier to write out summaries for Tensorboard.
+
+When running the sample code generated log file via Tensorboard, note only 3 images are shown even though 4 were processed. Because TF by default only renders 3, to change it:
+
+```python
+tf.summary.image('image', images_tensor, max_outputs=4)
+```
 
 
 
