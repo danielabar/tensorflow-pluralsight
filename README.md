@@ -38,7 +38,8 @@
     - [The MNIST Dataset](#the-mnist-dataset)
     - [Types of ML Algorithms](#types-of-ml-algorithms)
     - [K-nearest-neighbors Algorithm](#k-nearest-neighbors-algorithm)
-    - [Distance Measures](#distance-measures)
+    - [L1 Distance](#l1-distance)
+    - [KNN In TensorFlow](#knn-in-tensorflow)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -756,13 +757,50 @@ Notice portions of image that have strokes have higher intensity values, and whi
 - Distance does not just apply to co-ordinates, can be applied to images because they are just 3-D arrays of pixels representing the values.
 - Common distance measures are: Euclidean distance, Hamming distance, Manhattan distance.
 
-### Distance Measures
-
 **Euclidean Distance**
 
-Standard formula to measure distance between any two points in space. Gives shortest distance between two points "as the crow files". Use when points are in continuous space.
+Standard formula to measure distance between any two points in space. Gives shortest distance between two points "as the crow flies". Use when points are in continuous space.
 
 ![euclidian](images/euclidian.png "euclidian")
+
+If points are discretized, use...
+
+### L1 Distance
+
+Measure distance in discrete steps. aka *Snake distance*, City block distance, Manhattan distance.
+
+![l1-distance](images/l1-distance.png "l1-distance")
+
+Longer than Euclidian distance. More intuitive and easy to calculate.
+
+To calculate, consider co-ordinates of two points: (1, 0) and (5, 4)
+
+Start with x-coordinates 1 and 5, subtracting: 5-1 = 4.
+Then do the same with y coordinates 0 and 4: 4 - 0 = 4.
+
+Find absolute value of difference between coordinates (4, 4) and add them to get: 8.
+
+In the above example, 8 is L1 distance between purple and green points.
+
+### KNN In TensorFlow
+
+Approach:
+
+1. Access/download MNIST training and test images in batches using TF libraries
+1. Calculate L1 distance between the test digit and all training digits. Predict value of test digit by finding value in training data that is its nearest neighbor. Will use K=1, i.e. closest one neighbor.
+1. Run algorithm, predict labels for all test data and measure accuracy.
+
+[Original code](https://github.com/aymericdamien/TensorFlow-Examples)
+
+[Demo](code/knn-mnist.py)
+
+```python
+mnist = input_data.read_data_sets('mnist_data/', one_hot=True)
+```
+
+`one_hot-True` means labels represented as 10 element vector with all zeroes except one in index position which is the digit, for example:
+
+![mnist-labels](images/mnist-label.png "mnist-label")
 
 
 
